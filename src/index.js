@@ -10,6 +10,7 @@ import {
   ProductVariantInputSchema,
   VariantMedia
 } from "./simpleSchemas.js";
+import startup from "./startup.js";
 
 /**
  * @summary Import and call this function to add this plugin to your API.
@@ -37,6 +38,9 @@ export default async function register(app) {
           [{ updatedAt: 1, _id: 1 }]
         ]
       }
+    },
+    functionsByType: {
+      startup: [startup]
     },
     graphQL: {
       resolvers,
