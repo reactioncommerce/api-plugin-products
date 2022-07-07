@@ -1,6 +1,10 @@
 import getPaginatedResponse from "@reactioncommerce/api-utils/graphql/getPaginatedResponse.js";
 import wasFieldRequested from "@reactioncommerce/api-utils/graphql/wasFieldRequested.js";
-import { decodeProductOpaqueId, decodeShopOpaqueId, decodeTagOpaqueId } from "../../xforms/id.js";
+import {
+  decodeProductOpaqueId,
+  decodeShopOpaqueId,
+  decodeTagOpaqueId
+} from "../../xforms/id.js";
 
 /**
  * @name Query/products
@@ -20,6 +24,7 @@ export default async function products(_, args, context, info) {
     shopIds: opaqueShopIds,
     tagIds: opaqueTagIds,
     query: queryString,
+    filters,
     isArchived,
     isVisible,
     isExactMatch,
@@ -31,10 +36,19 @@ export default async function products(_, args, context, info) {
   } = args;
 
   const shopIds = opaqueShopIds.map(decodeShopOpaqueId);
-  const productIds = opaqueProductIds && opaqueProductIds.map(decodeProductOpaqueId);
+  const productIds =
+    opaqueProductIds && opaqueProductIds.map(decodeProductOpaqueId);
   const tagIds = opaqueTagIds && opaqueTagIds.map(decodeTagOpaqueId);
 
+  if (filters) {
+    filters.shopIds = filters.shopIds.map(decodeShopOpaqueId);
+    filters.productIds =
+      filters.productIds && filters.productIds.map(decodeProductOpaqueId);
+    filters.tagIds = filters.tagIds && filters.tagIds.map(decodeTagOpaqueId);
+  }
+
   const query = await context.queries.products(context, {
+    filters,
     productIds,
     shopIds,
     tagIds,

@@ -1,6 +1,6 @@
 import SimpleSchema from "simpl-schema";
 
-const filters = new SimpleSchema({
+const schema = {
   "productIds": {
     type: Array,
     optional: true
@@ -49,6 +49,14 @@ const filters = new SimpleSchema({
     optional: true,
     defaultValue: false
   }
+};
+
+const filters = new SimpleSchema({
+  filters: {
+    type: new SimpleSchema(schema),
+    optional: true
+  },
+  ...schema
 });
 
 /**
@@ -70,69 +78,79 @@ export default function applyProductFilters(context, productFilters) {
   };
 
   if (productFilters) {
+    let filterData = { ...productFilters };
+
+    if (filterData.filters) {
+      filterData = { ...filterData, ...filterData.filters };
+    }
+
     // filter by productIds
-    if (productFilters.productIds) {
+    if (filterData.productIds) {
       selector = {
         ...selector,
         _id: {
-          $in: productFilters.productIds
+          $in: filterData.productIds
         }
       };
     }
 
-    if (productFilters.shopIds) {
+    if (filterData.shopIds) {
       selector = {
         ...selector,
         shopId: {
-          $in: productFilters.shopIds
+          $in: filterData.shopIds
         }
       };
     }
 
     // filter by tags
-    if (productFilters.tagIds) {
+    if (filterData.tagIds) {
       selector = {
         ...selector,
         hashtags: {
-          $in: productFilters.tagIds
+          $in: filterData.tagIds
         }
       };
     }
 
     // filter by query
-    if (productFilters.query) {
+    if (filterData.query) {
       const cond = {
-        $regex: productFilters.query,
+        $regex: filterData.query,
         $options: "i"
       };
       selector = {
         ...selector,
-        $or: [{
-          title: cond
-        }, {
-          pageTitle: cond
-        }, {
-          description: cond
-        }]
+        $or: [
+          {
+            title: cond
+          },
+          {
+            pageTitle: cond
+          },
+          {
+            description: cond
+          }
+        ]
       };
     }
 
     // filter by details
-    if (productFilters.metafieldKey && productFilters.metafieldValue) {
+    if (filterData.metafieldKey && filterData.metafieldValue) {
       let keyCondition;
       let valueCondition;
 
       // Set the search condition based on isFuzzySearch flag
-      if (productFilters.isExactMatch) {
-        keyCondition = productFilters.metafieldKey;
-        valueCondition = productFilters.metafieldValue;
+      if (filterData.isExactMatch) {
+        keyCondition = filterData.metafieldKey;
+        valueCondition = filterData.metafieldValue;
       } else {
         keyCondition = {
-          $regex: productFilters.metafieldKey,
+          $regex: filterData.metafieldKey,
           $options: "i"
         };
         valueCondition = {
-          $regex: productFilters.metafieldValue,
+          $regex: filterData.metafieldValue,
           $options: "i"
         };
       }
@@ -149,45 +167,45 @@ export default function applyProductFilters(context, productFilters) {
     }
 
     // filter by visibility
-    if (productFilters.isVisible !== undefined) {
+    if (filterData.isVisible !== undefined) {
       selector = {
         ...selector,
-        isVisible: productFilters.isVisible
+        isVisible: filterData.isVisible
       };
     }
 
     // filter by archived
-    if (productFilters.isArchived !== undefined) {
+    if (filterData.isArchived !== undefined) {
       selector = {
         ...selector,
-        isDeleted: productFilters.isArchived
+        isDeleted: filterData.isArchived
       };
     }
 
     // filter by gte minimum price
-    if (productFilters.priceMin && !productFilters.priceMax) {
+    if (filterData.priceMin && !filterData.priceMax) {
       selector = {
         ...selector,
         "price.min": {
-          $gte: parseFloat(productFilters.priceMin)
+          $gte: parseFloat(filterData.priceMin)
         }
       };
     }
 
     // filter by lte maximum price
-    if (productFilters.priceMax && !productFilters.priceMin) {
+    if (filterData.priceMax && !filterData.priceMin) {
       selector = {
         ...selector,
         "price.max": {
-          $lte: parseFloat(productFilters.priceMax)
+          $lte: parseFloat(filterData.priceMax)
         }
       };
     }
 
     // filter with a price range
-    if (productFilters.priceMin && productFilters.priceMax) {
-      const priceMin = parseFloat(productFilters.priceMin);
-      const priceMax = parseFloat(productFilters.priceMax);
+    if (filterData.priceMin && filterData.priceMax) {
+      const priceMin = parseFloat(filterData.priceMin);
+      const priceMax = parseFloat(filterData.priceMax);
 
       // Filters a whose min and max price range are within the
       // range supplied from the filter

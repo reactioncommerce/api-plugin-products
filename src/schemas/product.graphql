@@ -613,6 +613,9 @@ extend type Query {
 
   "Query for a list of Products"
   products(
+    "Filters to apply to a list of products"
+    filters: ProductFilterInput
+
     "Filter by archived"
     isArchived: Boolean
 
@@ -667,4 +670,40 @@ extend type Query {
     "By default, products are sorted by createdAt. Set this to sort by one of the other allowed fields"
     sortBy: ProductSortByField = createdAt
   ): ProductConnection
+}
+
+"Input type for filters to by applied to an Products list"
+input ProductFilterInput {
+  "Filter by archived"
+  isArchived: Boolean
+
+  "Filter by visibility"
+  isVisible: Boolean
+
+  "Flag to set metafields search method. Default value false, performs a fuzzy search. Explicitly set it to true to perform exact match."
+  isExactMatch: Boolean = false
+
+  "Filter by metafield key using `regex` match. To get specific searches send the argument as a regex pattern"
+  metafieldKey: String
+
+  "Filter by metafield value using `regex` match. To get specific searches send the argument as a regex pattern"
+  metafieldValue: String
+
+  "Filter by price range maximum value"
+  priceMax: Float
+
+  "Filter by price range minimum value"
+  priceMin: Float
+
+  "List of product IDs to filter by"
+  productIds: [ID]
+
+  "Regex metch query string"
+  query: String
+
+  "List of tag ids to filter by"
+  tagIds: [ID]
+
+  "List of shop IDs to filter by"
+  shopIds: [ID]!
 }
