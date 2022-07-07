@@ -6,11 +6,11 @@ import Logger from "@reactioncommerce/logger";
  * @returns {undefined}
  */
 async function extendSchemas(context) {
-  const allFulfillmentTypesArray = await context.queries.allFulfillmentTypes(context);
+  let allFulfillmentTypesArray = await context.queries.allFulfillmentTypes(context);
 
-  if (!allFulfillmentTypesArray || allFulfillmentTypesArray.length === 0){
+  if (!allFulfillmentTypesArray || allFulfillmentTypesArray.length === 0) {
     Logger.warn("No fulfillment types available, setting 'shipping' as default");
-    allFulfillmentTypesArray = ['shipping'];
+    allFulfillmentTypesArray = ["shipping"];
   }
 
   const { simpleSchemas: { Product } } = context;
@@ -21,9 +21,9 @@ async function extendSchemas(context) {
     },
     "supportedFulfillmentTypes.$": {
       type: String,
-      allowedValues: allFulfillmentTypesArray,
-    },
-  }
+      allowedValues: allFulfillmentTypesArray
+    }
+  };
   Product.extend(schemaProductExtension);
 }
 
@@ -33,7 +33,5 @@ async function extendSchemas(context) {
  * @returns {undefined}
  */
 export default async function productStartup(context) {
-
   await extendSchemas(context);
-
 }
