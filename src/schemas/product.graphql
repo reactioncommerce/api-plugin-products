@@ -703,7 +703,4 @@ input ProductFilterInput {
 
   "List of tag ids to filter by"
   tagIds: [ID]
-
-  "List of shop IDs to filter by"
-  shopIds: [ID]!
 }
