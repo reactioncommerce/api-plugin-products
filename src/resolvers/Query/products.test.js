@@ -1,7 +1,9 @@
+import getFakeMongoCursor from "@reactioncommerce/api-utils/tests/getFakeMongoCursor.js";
 import mockContext from "@reactioncommerce/api-utils/tests/mockContext.js";
 import products from "./products";
 
-mockContext.queries.products = jest.fn().mockName("queries.products").mockReturnValue(Promise.resolve([]));
+const mockNavigationItemsQuery = getFakeMongoCursor("products", Promise.resolve([]));
+mockContext.queries.products = jest.fn().mockName("queries.products").mockReturnValue(mockNavigationItemsQuery);
 
 test("Testing products, should accepts parameters", async () => {
   mockContext.validatePermissions.mockReturnValueOnce(Promise.resolve(null));
@@ -12,8 +14,7 @@ test("Testing products, should accepts parameters", async () => {
     isVisible: true
   };
 
-  const doNothing = () => null;
-  await products({}, args, mockContext, {}).catch(doNothing);
+  await products({}, args, mockContext, { fieldNodes: [] });
   expect(mockContext.queries.products).toHaveBeenCalledWith(mockContext, expect.objectContaining({
     shopIds: ["SHOP_ID"],
     isVisible: true,
