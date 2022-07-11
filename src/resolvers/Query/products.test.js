@@ -5,7 +5,7 @@ import products from "./products";
 const mockNavigationItemsQuery = getFakeMongoCursor("products", Promise.resolve([]));
 mockContext.queries.products = jest.fn().mockName("queries.products").mockReturnValue(mockNavigationItemsQuery);
 
-test("Testing products, should accepts parameters", async () => {
+test("products query should accepts parameters", async () => {
   mockContext.validatePermissions.mockReturnValueOnce(Promise.resolve(null));
 
   const args = {
