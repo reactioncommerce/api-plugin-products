@@ -2,6 +2,7 @@ import getConnectionTypeResolvers from "@reactioncommerce/api-utils/graphql/getC
 import ProductConfiguration from "./ProductConfiguration.js";
 import Mutation from "./Mutation/index.js";
 import Query from "./Query/index.js";
+import Subscription from './Subscription/index.js';
 import Product from "./Product/index.js";
 import ProductVariant from "./ProductVariant/index.js";
 
@@ -9,6 +10,7 @@ export default {
   ProductConfiguration,
   Mutation,
   Query,
+  Subscription,
   Product,
   ProductVariant,
   ...getConnectionTypeResolvers("Product")

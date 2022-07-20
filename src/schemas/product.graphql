@@ -668,3 +668,8 @@ extend type Query {
     sortBy: ProductSortByField = createdAt
   ): ProductConnection
 }
+
+
+type Subscription {
+  productCreated(shopId: ID!): Product
+}

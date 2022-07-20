@@ -32,6 +32,11 @@ export default async function createProduct(_, { input }, context) {
     shopId: decodeShopOpaqueId(shopId),
     shouldCreateFirstVariant
   });
+  
+  console.log('Product created')
+  context.pubSub.publish('PRODUCT_CREATED', {
+    productCreated: product
+  });
 
   return {
     clientMutationId,
