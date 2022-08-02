@@ -6,7 +6,7 @@ import Logger from "@reactioncommerce/logger";
  * @returns {undefined}
  */
 async function extendSchemas(context) {
-  let allFulfillmentTypesArray = await context.queries.allFulfillmentTypes(context);
+  let allFulfillmentTypesArray = context.allRegisteredFulfillmentTypes?.registeredFulfillmentTypes;
 
   if (!allFulfillmentTypesArray || allFulfillmentTypesArray.length === 0) {
     Logger.warn("No fulfillment types available, setting 'shipping' as default");
