@@ -15,6 +15,7 @@ import { decodeProductOpaqueId, decodeShopOpaqueId, decodeTagOpaqueId } from "..
  * @returns {Promise<Object>} Products
  */
 export default async function products(_, args, context, info) {
+  const argsWithFiltersMerged = { ...args, ...args.filters, filters: undefined };
   const {
     productIds: opaqueProductIds,
     shopIds: opaqueShopIds,
@@ -28,7 +29,7 @@ export default async function products(_, args, context, info) {
     priceMin,
     priceMax,
     ...connectionArgs
-  } = args;
+  } = argsWithFiltersMerged;
 
   const shopIds = opaqueShopIds.map(decodeShopOpaqueId);
   const productIds = opaqueProductIds && opaqueProductIds.map(decodeProductOpaqueId);
