@@ -278,7 +278,7 @@ export const ProductVariant = new SimpleSchema({
  * @property {String} publishedProductHash optional
  * @property {String} shopId Product ShopID
  * @property {Boolean} shouldAppearInSitemap optional, whether this product should appear in auto-generated sitemap.xml
- * @property {String[]} supportedFulfillmentTypes Types of fulfillment ("shipping", "pickup", etc) allowed for this product
+//  * @property {String[]} supportedFulfillmentTypes Types of fulfillment ("shipping", "pickup", etc) allowed for this product
  * @property {String} template optional
  * @property {String} title Product Title
  * @property {String} twitterMsg optional
@@ -382,10 +382,11 @@ export const Product = new SimpleSchema({
     type: Boolean,
     optional: true
   },
-  "supportedFulfillmentTypes": {
-    type: Array
-  },
-  "supportedFulfillmentTypes.$": String,
+  // This is extended in startup with dynamic values for allowedValues
+  // "supportedFulfillmentTypes": {
+  //   type: Array
+  // },
+  // "supportedFulfillmentTypes.$": String,
   "template": {
     type: String,
     optional: true
